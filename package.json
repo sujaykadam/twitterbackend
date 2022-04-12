@@ -1,0 +1,33 @@
+{
+  "name": "twitterbackend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "make-seed" : "npx knex seed:make dev --knexfile ./db/knexfile.js --client postgres",
+    "migrate": "npx knex migrate:latest --knexfile ./db/knexfile.js --client postgres",
+    "dev": "nodemon index.js",
+    "seed": "npx knex seed:run --knexfile ./db/knexfile.js --client postgres",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sujaykadam/twitterbackend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sujaykadam/twitterbackend/issues"
+  },
+  "homepage": "https://github.com/sujaykadam/twitterbackend#readme",
+  "dependencies": {
+    "express": "^4.17.3",
+    "knex": "^1.0.6",
+    "objection": "^3.0.1",
+    "pg": "^8.7.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}

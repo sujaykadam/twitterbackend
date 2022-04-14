@@ -7,20 +7,21 @@ const {knexSnakeCaseMappers} = require("objection");
  */
 module.exports = {
   development: {
-    client: 'postgresql',
+    client: 'pg',
     connection: {
       host: 'localhost',
       port: '8823',
       database: 'twitterdb',
       user:     'sujaykadam',
-      password: 'pass'
+      password: 'pass',
     },
     pool: {
       min: 2,
       max: 10
     },
     migrations: {
-      tableName: 'knex_migrations'
+      tableName: 'knex_migrations',
+      directory: './migrations'
     },
     seeds: {
       directory: './seeds'

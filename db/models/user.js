@@ -16,7 +16,25 @@ class user extends Model {
                 password: { type: 'string' }
             }
         }
-    }   
+    }
+    static relationMappings = {
+        followers: {
+          relation: Model.HasManyRelation,
+          modelClass: user,
+          join: {
+            from: 'user.username',
+            to: 'followers.username'
+          }
+        },
+        following: {
+          relation: Model.HasManyRelation,
+          modelClass: user,
+          join: {
+            from: 'user.username',
+            to: 'following.username'
+          }
+        },
+      };
 }
 
 module.exports = user

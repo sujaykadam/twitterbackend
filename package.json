@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "make-seed" : "npx knex seed:make dev --knexfile ./db/knexfile.js --client postgres",
-    "migrate": "npx knex migrate:latest --knexfile ./db/knexfile.js --client postgres",
+    "migrate": "npx knex --knexfile ./db/knexfile.js migrate:latest",
+    "makemigrate": "npx knex migrate:make init --client postgres --migrations-directory ./db/migrations",
     "dev": "nodemon index.js",
     "seed": "npx knex seed:run --knexfile ./db/knexfile.js --client postgres",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -22,8 +22,11 @@
   },
   "homepage": "https://github.com/sujaykadam/twitterbackend#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.3",
+    "jsonwebtoken": "^8.5.1",
     "knex": "^1.0.6",
+    "node-fetch": "^3.2.3",
     "objection": "^3.0.1",
     "pg": "^8.7.3"
   },

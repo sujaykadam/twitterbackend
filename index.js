@@ -37,12 +37,10 @@ app.post('/authuser', async (req, res) => {
 })
 
 app.post('/getuser', async(req, res) => {
-    console.log(req.body.username)
     try{var result = await user.query().select('username','fname','lname').where('username','=',req.body.username)
     if (result.length == 0)
         res.status(404).send('User Not Found')
     else {
-        console.log(result[0])
         res.send(result[0])
     }
     } catch{
@@ -53,7 +51,6 @@ app.post('/getuser', async(req, res) => {
 app.post('/registeruser', async(req, res) => {
     try{
         var result = await user.query().insert(req.body)
-        console.log(result)
         res.status(200).send("User Registered")
     }catch(err){
         console.log(err.nativeError.code)

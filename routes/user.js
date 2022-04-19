@@ -74,4 +74,22 @@ userrouter.post('/registeruser', async(req, res) => {
     }
 })
 
+userrouter.post('/modifyfollow', async(req, res) => {
+    try{
+        if (req.body.ifollow){
+            await following.query().delete().where({username:req.body.username, follows:req.body.profile})
+            var result = {action: false}
+        }
+        else{
+            await following.query().insert({username:req.body.username, follows:req.body.profile})
+            var result = {action: true}
+        }
+        res.send(result)
+        
+    }catch(err){
+        console.log(err)
+        res.status(503).send(err.nativeError.code)
+    }
+})
+
 module.exports = userrouter

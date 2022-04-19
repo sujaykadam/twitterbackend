@@ -1,4 +1,6 @@
-const {Model} = require('objection')
+const {Model} = require('objection');
+const following = require('./following');
+const tweets = require('./tweets');
 
 class user extends Model {
     static get tableName() {
@@ -18,20 +20,21 @@ class user extends Model {
         }
     }
     static relationMappings = {
-        followers: {
-          relation: Model.HasManyRelation,
-          modelClass: user,
-          join: {
-            from: 'user.username',
-            to: 'followers.username'
-          }
-        },
+      
         following: {
           relation: Model.HasManyRelation,
-          modelClass: user,
+          modelClass: following,
           join: {
             from: 'user.username',
             to: 'following.username'
+          }
+        },
+        tweets: {
+          relation: Model.HasManyRelation,
+          modelClass: tweets,
+          join: {
+            from: 'user.username',
+            to: 'tweets.username'
           }
         },
       };

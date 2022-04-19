@@ -1,6 +1,8 @@
 const express = require('express')
 const tweets = require('../db/models/tweets');
 const following = require('../db/models/following')
+const user = require('../db/models/user')
+
 const tweetrouter = express.Router()
 const { raw } = require('objection');
 
@@ -16,19 +18,13 @@ tweetrouter.post('/tweet', async (req, res) => {
 
 tweetrouter.get('/tweets', async (req, res) => {
     try {
-        /*var tweetslis = await tweets.query()
-            .select('user.fname', 'user.lname', 'user.username', 'user.picture', 'tweets.tweet','tweets.id')
-            .join('user', 'user.username', 'tweets.username').orderBy('tweets.updated_at','desc')*/
-        var followinglis = await following.query()
-                            .select('following.follows')
-                            .where('following.username','=',`${req.headers.username}`)
-        followinglis = followinglis.map(ele => ele.follows)
-        var tweetslis = await tweets.query()
-                        .select('user.fname', 'user.lname', 'user.username', 'user.picture', 'tweets.tweet','tweets.id')
-                        .join('user', 'user.username', 'tweets.username')
-                        .where('user.username','=', `${req.headers.username}`)
-                        .orWhereIn('user.username',followinglis)
-                        .orderBy('tweets.updated_at','desc')
+        var tweetslis = await user.query()
+            .select('user.fname', 'user.lname', 'user.username', 'user.picture', 'tweets.tweet', 'tweets.id')
+            .joinRelated('tweets')
+            .whereIn('user.username',
+                following.query().select('following.follows').where({ username: `${req.headers.username}` }))
+            .orWhere({'user.username': `${req.headers.username}`})
+            .orderBy('tweets.updated_at', 'desc')
     } catch (err) {
         console.log(err.message)
         res.send(err)

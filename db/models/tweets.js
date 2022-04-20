@@ -17,16 +17,7 @@ class tweets extends Model {
             }
         }
     }   
-    static relationMappings = { 
-        user: {
-          relation: Model.BelongsToOneRelation,
-          modelClass: user,
-          join: {
-            from: 'user.username',
-            to: 'tweet.username'
-          }
-        }
-    }
+    
 }
 
 module.exports = tweets

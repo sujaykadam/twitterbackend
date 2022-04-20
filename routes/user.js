@@ -26,38 +26,34 @@ userrouter.post('/authuser', async (req, res) => {
 })
 
 userrouter.get('/profile', async(req, res) => {
-    var response = {}
     var result = {}
     try{
-        result = await user.query().select('username','fname','lname').where('username','=',req.headers.profile)
-        if (result.length == 0)
-            res.status(404).send('User Not Found')
-        else {
-            response.username = result[0].username
-            response.fname = result[0].fname
-            response.lname = result[0].lname
+        var data = await user.query()
+                            .select('user.fname', 'user.lname', 'user.picture', 'tweets', 'followers','following')
+                            .withGraphJoined('[followers,following,tweets]')
+                            .where({'user.username': `${req.headers.profile}`});
+        if (data.length == 0) res.status(404).send('User Not Found')
+        else{
+            result.fname = data[0].fname
+            result.lname = data[0].lname
+            result.followers = data[0].followers.length
+            result.following = data[0].following.length
+            result.tweets = []
+            data[0].tweets.reverse().forEach(element => {
+                result.tweets.push({
+                    fname: result.fname,
+                    lname: result.lname,
+                    username: req.headers.profile,
+                    picture: data[0].picture,
+                    tweet: element.tweet
+                    })
+            })
+            result.ifollow = false
+            data[0].followers.forEach(element => {
+                if (element.username == req.headers.username) result.ifollow = true
+            })
+            res.send(result)
         }
-        result.followers = await following.query().select('*').where('follows','=',req.headers.profile)
-        result.ifollow = false
-        result.followers.forEach(ele => {
-            if (ele.username == req.headers.username){
-                result.ifollow = true
-            }
-        })
-        result.followers = result.followers.length
-        result.following = await following.query().select('*').where('username','=',req.headers.profile)
-        result.following = result.following.length
-        
-        result.tweets = await tweets.query()
-        .select('user.fname', 'user.lname', 'user.username', 'user.picture', 'tweets.tweet','tweets.id')
-        .join('user', 'user.username', 'tweets.username').where('user.username',req.headers.profile).orderBy('tweets.updated_at','desc')
-
-        response.followers = result.followers
-        response.following = result.following
-        response.tweets = result.tweets
-        response.ifollow = result.ifollow
-
-        res.send(response)
     } catch(err){
         console.log(err)
         res.status(500).send("Internal Error")

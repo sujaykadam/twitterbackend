@@ -5,7 +5,6 @@ class following extends Model {
     static get tableName() {
         return 'following';
     }
-    
     static get jsonSchema() {
         return {
             type: 'object',

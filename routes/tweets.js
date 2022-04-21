@@ -19,12 +19,12 @@ tweetrouter.post('/tweet', async (req, res) => {
 tweetrouter.get('/tweets', async (req, res) => {
     try {
         var response = []
-        var result = await user.query()
-            .select('following')
-            .withGraphJoined('following.tweets(ordertweet).user(tweetdata)')
-            .where({'user.username': `${req.headers.username}`})
+        var result = await following.query()
+            .select('tweets')
+            .withGraphJoined('tweets(ordertweet).user(tweetdata)')
+            .where({'following.username': `${req.headers.username}`})
 
-        result[0].following.forEach(element => {
+        result.forEach(element => {
             element.tweets.forEach(ele => {
                 response.push({
                     id: ele.id,

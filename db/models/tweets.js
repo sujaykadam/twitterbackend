@@ -16,10 +16,23 @@ class tweets extends Model {
             }
         }
     }
+    static get relationMappings() {
+        const user = require('./user');
+        return {
+            user: {
+                relation: Model.BelongsToOneRelation,
+                modelClass: user,
+                join: {
+                    from: 'tweets.username',
+                    to: 'user.username'
+                }
+            },
+        }
+    }
     static modifiers = {
         ordertweet(query) {
             query
-                .select('id',"tweet")
+                .select('id', "tweet")
                 .orderBy("created_at", 'desc')
         }
     }

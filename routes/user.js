@@ -1,10 +1,8 @@
 const express = require('express')
 const user = require('../db/models/user');
 const following = require('../db/models/following')
-const tweets = require('../db/models/tweets')
 const userrouter = express.Router()
 const jwt = require('jsonwebtoken');
-const { response } = require('express');
 
 userrouter.post('/authuser', async (req, res) => {
     var result = await user.query().select('*').where('username','=',req.body.username)
@@ -54,7 +52,9 @@ userrouter.get('/profile', async(req, res) => {
 
 userrouter.post('/registeruser', async(req, res) => {
     try{
-        var result = await user.query().insert(req.body)
+        console.log(req.body)
+        await user.query().insert(req.body)
+        await following.query().insert({username: req.body.username, follows: req.body.username})
         res.status(200).send("User Registered")
     }catch(err){
         if(err.nativeError.code == 23505) res.send(err.nativeError.code)

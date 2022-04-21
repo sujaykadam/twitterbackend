@@ -18,18 +18,32 @@ tweetrouter.post('/tweet', async (req, res) => {
 
 tweetrouter.get('/tweets', async (req, res) => {
     try {
-        var tweetslis = await user.query()
-            .select('user.fname', 'user.lname', 'user.username', 'user.picture', 'tweets.tweet', 'tweets.id')
-            .joinRelated('tweets')
-            .whereIn('user.username',
-                following.query().select('following.follows').where({ username: `${req.headers.username}` }))
-            .orWhere({'user.username': `${req.headers.username}`})
-            .orderBy('tweets.updated_at', 'desc')
+        var response = []
+        var result = await user.query()
+            .select('following')
+            .withGraphJoined('following.tweets(ordertweet).user(tweetdata)')
+            .where({'user.username': `${req.headers.username}`})
+
+        result[0].following.forEach(element => {
+            element.tweets.forEach(ele => {
+                response.push({
+                    id: ele.id,
+                    fname: ele.user.fname,
+                    lname: ele.user.lname,
+                    username: ele.user.username,
+                    picture: ele.user.picture,
+                    tweet: ele.tweet
+                })
+            })
+        });
+        response.sort((a,b) => {
+            return b.id - a.id
+        })
+        res.send(response)
     } catch (err) {
         console.log(err.message)
         res.send(err)
     }
-    res.send(JSON.stringify(tweetslis))
 })
 
 module.exports = tweetrouter

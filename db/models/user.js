@@ -18,7 +18,7 @@ class user extends Model {
       }
     }
   }
-  
+
   static get relationMappings() {
     const following = require('./following');
     const tweets = require('./tweets');
@@ -40,8 +40,8 @@ class user extends Model {
           from: 'user.username',
           to: 'following.follows'
         }
-    },
-    
+      },
+
       tweets: {
         relation: Model.HasManyRelation,
         modelClass: tweets,
@@ -51,7 +51,13 @@ class user extends Model {
         }
       },
     }
-  };
+  }
+  static modifiers = {
+    tweetdata(query) {
+      query
+        .select('fname', 'lname','username','picture')
+    }
+  }
 }
 
 module.exports = user

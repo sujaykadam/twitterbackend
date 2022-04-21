@@ -30,7 +30,7 @@ userrouter.get('/profile', async(req, res) => {
     try{
         var data = await user.query()
                             .select('user.fname', 'user.lname', 'user.picture', 'tweets', 'followers','following')
-                            .withGraphJoined('[followers,following,tweets]')
+                            .withGraphJoined('[followers,following,tweets(ordertweet)]')
                             .where({'user.username': `${req.headers.profile}`});
         if (data.length == 0) res.status(404).send('User Not Found')
         else{
@@ -38,16 +38,8 @@ userrouter.get('/profile', async(req, res) => {
             result.lname = data[0].lname
             result.followers = data[0].followers.length
             result.following = data[0].following.length
-            result.tweets = []
-            data[0].tweets.reverse().forEach(element => {
-                result.tweets.push({
-                    fname: result.fname,
-                    lname: result.lname,
-                    username: req.headers.profile,
-                    picture: data[0].picture,
-                    tweet: element.tweet
-                    })
-            })
+            result.picture = data[0].picture
+            result.tweets = data[0].tweets
             result.ifollow = false
             data[0].followers.forEach(element => {
                 if (element.username == req.headers.username) result.ifollow = true

@@ -18,6 +18,7 @@ class user extends Model {
       }
     }
   }
+  
   static get relationMappings() {
     const following = require('./following');
     const tweets = require('./tweets');
